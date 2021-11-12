@@ -91,3 +91,9 @@ fabric.properties
 
 *.log
 .DS_Store
+rail-station-server/.idea/vcs.xml
+rail-station-server/.idea/runConfigurations.xml
+rail-station-server/.idea/misc.xml
+rail-station-server/.idea/jarRepositories.xml
+rail-station-server/.idea/compiler.xml
+rail-station-server/.idea/.name
