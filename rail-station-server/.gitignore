@@ -1,4 +1,3 @@
-@@ -0,0 +1,92 @@
 ### Gradle template
 .gradle
 **/build/
@@ -90,4 +89,4 @@ fabric.properties
 .idea/caches/build_file_checksums.ser
 
 *.log
-.DS_Store
+
