@@ -1,0 +1,81 @@
+package tradingone.reactorinacton.service
+
+import org.slf4j.LoggerFactory
+import org.springframework.stereotype.Service
+import reactor.core.publisher.Flux
+import reactor.core.publisher.Mono
+import tradingone.reactorinacton.domain.TrainScheduleResponse
+import tradingone.reactorinacton.repository.TrainRepository
+import java.time.Duration
+import java.time.Instant
+import java.util.*
+import kotlin.random.Random
+
+@Service
+class TrainService(val trainRepository: TrainRepository) {
+
+    val departureCities: MutableList<String> = mutableListOf("Berlin, Madrid, Kiev")
+    val destinationCities: MutableList<String> = mutableListOf("Paris, Rome, Vienna")
+    private val logger = LoggerFactory.getLogger(javaClass)
+
+    fun getTrainScheduleById(id: UUID): Mono<TrainScheduleResponse> {
+        //trainRepository.findById(id).flatMap { record ->
+        return Mono.just(
+            TrainScheduleResponse(
+                getRandomDepartureCity(),
+                getRandomDestinationCity(),
+                Instant.now()
+            )
+        )
+        // }.switchIfEmpty(Mono.empty())
+    }
+
+    fun addCity(cityName: String): Mono<Void> {
+        logger.info("adding {} to list", cityName)
+        if ((1..100).random() % 2 == 0) {
+            departureCities.add(cityName)
+            logger.info("List size is {}", departureCities.size)
+        } else {
+            destinationCities.add(cityName)
+            logger.info("List size is {}", destinationCities.size)
+        }
+        return Mono.empty()
+    }
+
+    fun getTrainScheduleStream(scheduleNumber: List<Long>): Flux<TrainScheduleResponse>? {
+        return Flux.range(0, scheduleNumber.size)
+            .delayElements(Duration.ofSeconds(2)).map {
+                TrainScheduleResponse(
+                    getRandomDepartureCity(),
+                    getRandomDestinationCity(),
+                    Instant.now()
+                )
+            }
+    }
+
+    fun getTrainScheduleChannel(requests: Flux<Duration>): Flux<TrainScheduleResponse> {
+        return requests
+            .doOnNext { setting -> logger.info("Channel frequency setting is {} second(s).", setting.seconds) }
+            .doOnCancel { logger.warn("The client cancelled the channel.") }
+            .switchMap { setting ->
+                Flux.interval(setting)
+                    .map { index: Long ->
+                        TrainScheduleResponse(
+                            getRandomDepartureCity(),
+                            getRandomDestinationCity(),
+                            Instant.now()
+                        )
+                    }
+            }
+    }
+
+    private fun getRandomDestinationCity(): String {
+        logger.info("ListSize {}", destinationCities.size)
+        return destinationCities[Random.nextInt(0, destinationCities.size)]
+    }
+
+    private fun getRandomDepartureCity(): String {
+        logger.info("ListSize {}", departureCities.size)
+        return departureCities[Random.nextInt(0, departureCities.size)]
+    }
+}

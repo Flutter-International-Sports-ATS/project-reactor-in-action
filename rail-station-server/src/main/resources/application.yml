@@ -2,3 +2,8 @@ spring:
   data:
     mongodb:
       uuid-representation: standard
+  rsocket:
+    server:
+      port: 7000
+server:
+  port=: 8088
