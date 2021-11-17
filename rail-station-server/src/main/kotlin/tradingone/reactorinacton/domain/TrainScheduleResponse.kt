@@ -2,4 +2,4 @@ package tradingone.reactorinacton.domain
 
 import java.time.Instant
 
-class TrainScheduleResponse(departureCity: String, destinationCity: String, date: Instant)
+class TrainScheduleResponse(val departureCity: String, val destinationCity: String, val date: Instant)

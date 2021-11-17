@@ -4,21 +4,22 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
+import tradingone.reactorinacton.domain.TrainScheduleRequest
 import tradingone.reactorinacton.domain.TrainScheduleResponse
 import tradingone.reactorinacton.repository.TrainRepository
 import java.time.Duration
 import java.time.Instant
-import java.util.*
 import kotlin.random.Random
 
 @Service
 class TrainService(val trainRepository: TrainRepository) {
 
-    val departureCities: MutableList<String> = mutableListOf("Berlin, Madrid, Kiev")
-    val destinationCities: MutableList<String> = mutableListOf("Paris, Rome, Vienna")
+    val departureCities: MutableList<String> = mutableListOf("Berlin", "Madrid", "Kiev")
+    val destinationCities: MutableList<String> = mutableListOf("Paris", "Rome", "Vienna")
     private val logger = LoggerFactory.getLogger(javaClass)
 
-    fun getTrainScheduleById(id: UUID): Mono<TrainScheduleResponse> {
+    fun getTrainScheduleById(id: Long): Mono<TrainScheduleResponse> {
+        logger.info("Getting train schedule by ID: {}", id)
         //trainRepository.findById(id).flatMap { record ->
         return Mono.just(
             TrainScheduleResponse(
@@ -42,8 +43,9 @@ class TrainService(val trainRepository: TrainRepository) {
         return Mono.empty()
     }
 
-    fun getTrainScheduleStream(scheduleNumber: List<Long>): Flux<TrainScheduleResponse>? {
-        return Flux.range(0, scheduleNumber.size)
+    fun getTrainScheduleStream(scheduleNumber: TrainScheduleRequest): Flux<TrainScheduleResponse>? {
+        logger.info("Streaming responses for {} train schedules", scheduleNumber.entries.size)
+        return Flux.range(0, scheduleNumber.entries.size)
             .delayElements(Duration.ofSeconds(2)).map {
                 TrainScheduleResponse(
                     getRandomDepartureCity(),
@@ -59,7 +61,7 @@ class TrainService(val trainRepository: TrainRepository) {
             .doOnCancel { logger.warn("The client cancelled the channel.") }
             .switchMap { setting ->
                 Flux.interval(setting)
-                    .map { index: Long ->
+                    .map {
                         TrainScheduleResponse(
                             getRandomDepartureCity(),
                             getRandomDestinationCity(),

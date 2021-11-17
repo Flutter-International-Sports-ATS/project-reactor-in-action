@@ -6,6 +6,7 @@ import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.RequestParam
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
+import tradingone.reactorinacton.domain.TrainScheduleRequest
 import tradingone.reactorinacton.domain.TrainScheduleResponse
 import tradingone.reactorinacton.service.TrainService
 import java.time.Duration
@@ -17,7 +18,7 @@ class TrainController(val trainService: TrainService) {
     private val logger = LoggerFactory.getLogger(javaClass)
 
     @MessageMapping("train-request-response")
-    fun getTrainScheduleById(@RequestParam id: UUID): Mono<TrainScheduleResponse> {
+    fun getTrainScheduleById(@RequestParam id: Long): Mono<TrainScheduleResponse> {
         return trainService.getTrainScheduleById(id)
     }
 
@@ -27,12 +28,12 @@ class TrainController(val trainService: TrainService) {
     }
 
     @MessageMapping("fire-and-forget")
-    fun fireAndForget(@RequestParam sportName: String) {
-        logger.info("Received fire and forget request: {}", sportName)
+    fun fireAndForget(@RequestParam id: Long) {
+        logger.info("Received fire and forget request: {}", id)
     }
 
     @MessageMapping("train-stream")
-    fun getTrainScheduleStream(scheduleNumber: List<Long>): Flux<TrainScheduleResponse>? {
+    fun getTrainScheduleStream(scheduleNumber: TrainScheduleRequest): Flux<TrainScheduleResponse>? {
         return trainService.getTrainScheduleStream(scheduleNumber);
     }
 

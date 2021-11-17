@@ -1,4 +1,4 @@
 package tradingone.reactorinacton.domain
 
-class TrainScheduleRequest {
+class TrainScheduleRequest(val entries: List<Long>) {
 }
