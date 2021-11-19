@@ -22,8 +22,8 @@ class RSocketClient {
             apiMethod,
         ).data(data)
             .retrieveFlux(returnClass)
-            .doOnNext(Consumer { response -> print(response) })
-            .doOnError(Consumer { error -> print(error.message) }) as Flux<T>
+            .doOnNext { response -> print(response) }
+            .doOnError { error -> print(error.message) } as Flux<T>
     }
 
     fun <T> rSocketChannel(
@@ -38,8 +38,8 @@ class RSocketClient {
             method,
         ).data(data)
             .retrieveFlux(returnClass)
-            .doOnNext(Consumer { response -> print(response) })
-            .doOnError(Consumer { error -> print(error.message) }) as Flux<T>
+            .doOnNext { response -> print(response) }
+            .doOnError { error -> print(error.message) } as Flux<T>
     }
 
     fun <T> rSocketMono(
@@ -54,8 +54,8 @@ class RSocketClient {
             apiMethod,
         ).data(data)
             .retrieveMono(returnClass)
-            .doOnNext(Consumer { response -> print(response) })
-            .doOnError(Consumer { error -> print(error.message) }) as Mono<T>
+            .doOnNext { response -> print(response) }
+            .doOnError { error -> print(error.message) } as Mono<T>
     }
 
     fun <T> rSocketMono(
@@ -71,8 +71,8 @@ class RSocketClient {
         returnClass: Class<out Any?>
     ): Flux<T> {
         val setting1 = Mono.just(Duration.ofSeconds(1))
-        val setting2 = Mono.just(Duration.ofSeconds(3)).delayElement(Duration.ofSeconds(5))
-        val setting3 = Mono.just(Duration.ofSeconds(5)).delayElement(Duration.ofSeconds(15))
+        val setting2 = Mono.just(Duration.ofSeconds(2)).delayElement(Duration.ofSeconds(5))
+        val setting3 = Mono.just(Duration.ofSeconds(3)).delayElement(Duration.ofSeconds(15))
 
         val settings = Flux.concat(setting1, setting2, setting3)
         return rSocketChannel(rSocketRequester, rSocketMapping, settings, returnClass, null)
@@ -84,9 +84,5 @@ class RSocketClient {
     ): RSocketRequester.RequestSpec {
 
         return rSocketRequester.route(route)
-    }
-
-    private fun buildRoute(service: String, method: String): String {
-        return "$service.$method"
     }
 }

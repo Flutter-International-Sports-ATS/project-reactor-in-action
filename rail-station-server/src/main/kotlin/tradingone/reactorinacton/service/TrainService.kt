@@ -11,7 +11,7 @@ import java.time.Instant
 import kotlin.random.Random
 
 @Service
-class TrainService() {
+class TrainService {
 
     val departureCities: MutableList<String> = mutableListOf("Berlin", "Madrid", "Kiev")
     val destinationCities: MutableList<String> = mutableListOf("Paris", "Rome", "Vienna")

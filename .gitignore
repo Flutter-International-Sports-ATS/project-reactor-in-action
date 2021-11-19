@@ -97,3 +97,7 @@ rail-station-server/.idea/misc.xml
 rail-station-server/.idea/jarRepositories.xml
 rail-station-server/.idea/compiler.xml
 rail-station-server/.idea/.name
+rail-station-server/.idea/modules.xml
+rail-station-server/.idea/modules/reactor-in-acton.main.iml
+rail-station-server/.idea/modules/reactor-in-acton.iml
+rail-station-server/.idea/modules/reactor-in-acton.test.iml
