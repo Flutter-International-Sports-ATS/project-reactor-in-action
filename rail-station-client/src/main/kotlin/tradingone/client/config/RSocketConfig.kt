@@ -9,10 +9,10 @@ import org.springframework.messaging.rsocket.RSocketStrategies
 
 
 @Configuration
-class TrainConfig {
+class RSocketConfig {
     
-    @Bean("resource")
-    fun resourceRSocketRequester(
+    @Bean
+    fun rSocketRequester(
         rSocketRequesterBuilder: RSocketRequester.Builder
     ): RSocketRequester {
         return rSocketRequesterBuilder

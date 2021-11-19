@@ -6,13 +6,12 @@ import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import tradingone.reactorinacton.domain.TrainScheduleRequest
 import tradingone.reactorinacton.domain.TrainScheduleResponse
-import tradingone.reactorinacton.repository.TrainRepository
 import java.time.Duration
 import java.time.Instant
 import kotlin.random.Random
 
 @Service
-class TrainService(val trainRepository: TrainRepository) {
+class TrainService() {
 
     val departureCities: MutableList<String> = mutableListOf("Berlin", "Madrid", "Kiev")
     val destinationCities: MutableList<String> = mutableListOf("Paris", "Rome", "Vienna")
@@ -20,7 +19,6 @@ class TrainService(val trainRepository: TrainRepository) {
 
     fun getTrainScheduleById(id: Long): Mono<TrainScheduleResponse> {
         logger.info("Getting train schedule by ID: {}", id)
-        //trainRepository.findById(id).flatMap { record ->
         return Mono.just(
             TrainScheduleResponse(
                 getRandomDepartureCity(),
@@ -28,7 +26,6 @@ class TrainService(val trainRepository: TrainRepository) {
                 Instant.now()
             )
         )
-        // }.switchIfEmpty(Mono.empty())
     }
 
     fun addCity(cityName: String): Mono<Void> {

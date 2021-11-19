@@ -1,6 +1,5 @@
 package tradingone.client.controller
 
-import org.slf4j.LoggerFactory
 import org.springframework.http.MediaType
 import org.springframework.messaging.rsocket.RSocketRequester
 import org.springframework.web.bind.annotation.GetMapping
@@ -10,16 +9,14 @@ import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import tradingone.client.domain.TrainScheduleResponse
 import tradingone.client.domain.TrainScheduleStreamRequest
-import tradingone.client.service.RSocketService
+import tradingone.client.service.RSocketClient
 
 @RestController
-class TrainController(val rSocketRequester: RSocketRequester, private val rSocketService: RSocketService) {
-
-    private val logger = LoggerFactory.getLogger(javaClass)
+class TrainController(val rSocketRequester: RSocketRequester, private val rSocketClient: RSocketClient) {
 
     @GetMapping("/train-schedule/{id}")
     fun getTrainSchedule(@PathVariable id: Long): Mono<TrainScheduleResponse> {
-        return rSocketService.rSocketMono(
+        return rSocketClient.rSocketMono(
             rSocketRequester,
             "train-request-response",
             id,
@@ -29,7 +26,7 @@ class TrainController(val rSocketRequester: RSocketRequester, private val rSocke
 
     @GetMapping("/add-train-schedule/{cityName}")
     fun saveSchedule(@PathVariable cityName: String): Mono<Void> {
-        return rSocketService.rSocketMono(
+        return rSocketClient.rSocketMono(
             rSocketRequester,
             "persist-train",
             cityName,
@@ -39,7 +36,7 @@ class TrainController(val rSocketRequester: RSocketRequester, private val rSocke
 
     @GetMapping("/train-fire-and-forget/{id}")
     fun getTrainFireAndForget(@PathVariable id: Long): Mono<Void> {
-        return rSocketService.rSocketMono(
+        return rSocketClient.rSocketMono(
             rSocketRequester,
             "fire-and-forget",
             id,
@@ -49,7 +46,7 @@ class TrainController(val rSocketRequester: RSocketRequester, private val rSocke
 
     @GetMapping("/train-stream", produces = [MediaType.TEXT_EVENT_STREAM_VALUE])
     fun getTrainStream(): Flux<TrainScheduleResponse> {
-        return rSocketService.rSocketFlux(
+        return rSocketClient.rSocketFlux(
             rSocketRequester,
             "train-stream",
             TrainScheduleStreamRequest(listOf(23, 12, 3, 5, 10)),
@@ -60,6 +57,6 @@ class TrainController(val rSocketRequester: RSocketRequester, private val rSocke
 
     @GetMapping(value = ["/train-channel"], produces = [MediaType.TEXT_EVENT_STREAM_VALUE])
     fun getTrainChannel(): Flux<TrainScheduleResponse> {
-        return rSocketService.rSocketChannel(rSocketRequester, "train-channel", TrainScheduleResponse::class.java)
+        return rSocketClient.rSocketChannel(rSocketRequester, "train-channel", TrainScheduleResponse::class.java)
     }
 }
