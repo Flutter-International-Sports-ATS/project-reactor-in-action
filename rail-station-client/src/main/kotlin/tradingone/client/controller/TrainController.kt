@@ -4,6 +4,7 @@ import org.springframework.http.MediaType
 import org.springframework.messaging.rsocket.RSocketRequester
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RestController
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
@@ -24,17 +25,7 @@ class TrainController(val rSocketRequester: RSocketRequester, private val rSocke
         )
     }
 
-    @GetMapping("/add-train-schedule/{cityName}")
-    fun saveSchedule(@PathVariable cityName: String): Mono<Void> {
-        return rSocketClient.rSocketMono(
-            rSocketRequester,
-            "persist-train",
-            cityName,
-            Void::class.java
-        )
-    }
-
-    @GetMapping("/train-fire-and-forget/{id}")
+    @PostMapping("/train-fire-and-forget/{id}")
     fun getTrainFireAndForget(@PathVariable id: Long): Mono<Void> {
         return rSocketClient.rSocketMono(
             rSocketRequester,
@@ -58,5 +49,15 @@ class TrainController(val rSocketRequester: RSocketRequester, private val rSocke
     @GetMapping(value = ["/train-channel"], produces = [MediaType.TEXT_EVENT_STREAM_VALUE])
     fun getTrainChannel(): Flux<TrainScheduleResponse> {
         return rSocketClient.rSocketChannel(rSocketRequester, "train-channel", TrainScheduleResponse::class.java)
+    }
+
+    @PostMapping("/add-train-schedule/{cityName}")
+    fun saveSchedule(@PathVariable cityName: String): Mono<Void> {
+        return rSocketClient.rSocketMono(
+            rSocketRequester,
+            "persist-train",
+            cityName,
+            Void::class.java
+        )
     }
 }

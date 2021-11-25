@@ -28,18 +28,6 @@ class TrainService {
         )
     }
 
-    fun addCity(cityName: String): Mono<Void> {
-        logger.info("adding {} to list", cityName)
-        if ((1..100).random() % 2 == 0) {
-            departureCities.add(cityName)
-            logger.info("List size is {}", departureCities.size)
-        } else {
-            destinationCities.add(cityName)
-            logger.info("List size is {}", destinationCities.size)
-        }
-        return Mono.empty()
-    }
-
     fun getTrainScheduleStream(scheduleNumber: TrainScheduleRequest): Flux<TrainScheduleResponse>? {
         logger.info("Streaming responses for {} train schedules", scheduleNumber.entries.size)
         return Flux.range(0, scheduleNumber.entries.size)
@@ -66,6 +54,18 @@ class TrainService {
                         )
                     }
             }
+    }
+
+    fun addCity(cityName: String): Mono<Void> {
+        logger.info("adding {} to list", cityName)
+        if ((1..100).random() % 2 == 0) {
+            departureCities.add(cityName)
+            logger.info("List size is {}", departureCities.size)
+        } else {
+            destinationCities.add(cityName)
+            logger.info("List size is {}", destinationCities.size)
+        }
+        return Mono.empty()
     }
 
     private fun getRandomDestinationCity(): String {

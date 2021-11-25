@@ -22,11 +22,6 @@ class TrainController(val trainService: TrainService) {
         return trainService.getTrainScheduleById(id)
     }
 
-    @MessageMapping("persist-train")
-    fun saveSchedule(@RequestParam cityName: String): Mono<Void> {
-        return trainService.addCity(cityName)
-    }
-
     @MessageMapping("fire-and-forget")
     fun fireAndForget(@RequestParam id: Long) {
         logger.info("Received fire and forget request: {}", id)
@@ -40,5 +35,10 @@ class TrainController(val trainService: TrainService) {
     @MessageMapping("train-channel")
     fun getTrainScheduleChannel(requests: Flux<Duration>): Flux<TrainScheduleResponse> {
         return trainService.getTrainScheduleChannel(requests)
+    }
+
+    @MessageMapping("persist-train")
+    fun saveSchedule(@RequestParam cityName: String): Mono<Void> {
+        return trainService.addCity(cityName)
     }
 }

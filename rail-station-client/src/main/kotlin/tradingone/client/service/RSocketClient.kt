@@ -72,7 +72,7 @@ class RSocketClient {
     ): Flux<T> {
         val setting1 = Mono.just(Duration.ofSeconds(1))
         val setting2 = Mono.just(Duration.ofSeconds(2)).delayElement(Duration.ofSeconds(5))
-        val setting3 = Mono.just(Duration.ofSeconds(3)).delayElement(Duration.ofSeconds(15))
+        val setting3 = Mono.just(Duration.ofSeconds(3)).delayElement(Duration.ofSeconds(10))
 
         val settings = Flux.concat(setting1, setting2, setting3)
         return rSocketChannel(rSocketRequester, rSocketMapping, settings, returnClass, null)
